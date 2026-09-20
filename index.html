@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RZK Digital | Desafio Tecnico de Business Intelligence</title>
+    <meta name="description" content="Dashboard Executivo e Storytelling Analitico de E-Commerce para a RZK Digital com base no dataset Olist.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Header & Navegacao Superior -->
+    <header class="main-header" id="mainHeader">
+        <div class="header-container">
+            <div class="brand-group">
+                <div class="brand-badge">RZK DIGITAL</div>
+                <div class="brand-title">
+                    <span class="primary-text">Business Intelligence</span>
+                    <span class="secondary-text">Executive Dashboard</span>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#overview" class="nav-link active">Visao Geral</a>
+                <a href="#modeling" class="nav-link">Modelagem</a>
+                <a href="#categories" class="nav-link">Categorias</a>
+                <a href="#sellers" class="nav-link">Sellers</a>
+                <a href="#storytelling" class="nav-link">Storytelling</a>
+                <a href="#dax-catalog" class="nav-link">DAX</a>
+            </nav>
+            <div class="header-actions">
+                <a href="https://github.com/evelinlins" target="_blank" rel="noopener noreferrer" class="btn-github">
+                    <span>GitHub Repositorio</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Executivo -->
+    <section class="hero-section" id="overview">
+        <div class="hero-container">
+            <div class="hero-tagline">
+                <span class="pulse-indicator"></span>
+                <span>Analise Estrategica de E-Commerce</span>
+            </div>
+            <h1 class="hero-title">Painel Executivo e Storytelling Analitico</h1>
+            <p class="hero-description">
+                Solucao de ponta a ponta desenvolvida para a RZK Digital com base no dataset Brazilian E-Commerce da Olist. Arquitetura dimensional Star Schema, medidas DAX vetoriais e analise preditiva para tomada de decisao de alto impacto.
+            </p>
+
+            <!-- Filtro Global de Ano -->
+            <div class="year-filter-wrapper">
+                <span class="filter-label">Recorte Temporal:</span>
+                <div class="year-buttons">
+                    <button class="btn-year active" data-year="all" onclick="filtrarAno('all')">Consolidado (2016 a 2018)</button>
+                    <button class="btn-year" data-year="2016" onclick="filtrarAno('2016')">2016 (Piloto)</button>
+                    <button class="btn-year" data-year="2017" onclick="filtrarAno('2017')">2017 (Expansao)</button>
+                    <button class="btn-year" data-year="2018" onclick="filtrarAno('2018')">2018 (Maturidade)</button>
+                </div>
+            </div>
+
+            <!-- Grade de Cartoes KPI -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Faturamento Total</span>
+                        <span class="kpi-pill" id="kpiYoYFaturamento">+29.4% YoY</span>
+                    </div>
+                    <div class="kpi-value" id="kpiFaturamento">R$ 15,82 M</div>
+                    <div class="kpi-subtext" id="kpiFaturamentoSub">Receita transacionada de mercadorias</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Volume de Itens</span>
+                        <span class="kpi-pill" id="kpiYoYVolume">+35.1% YoY</span>
+                    </div>
+                    <div class="kpi-value" id="kpiVolume">112.650</div>
+                    <div class="kpi-subtext" id="kpiVolumeSub">Unidades físicas entregues</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Ticket Medio Global</span>
+                        <span class="kpi-pill neutral">Eficiencia</span>
+                    </div>
+                    <div class="kpi-value" id="kpiTicketMedio">R$ 160,45</div>
+                    <div class="kpi-subtext" id="kpiTicketSub">Valor medio por pedido atendido</div>
+                </div>
+
+                <div class="kpi-card highlight-green">
+                    <div class="kpi-header">
+                        <span class="kpi-label">Nota Media de Avaliacao</span>
+                        <span class="kpi-pill success">CSAT Alto</span>
+                    </div>
+                    <div class="kpi-value text-green" id="kpiNotaMedia">4.08 / 5.0</div>
+                    <div class="kpi-subtext" id="kpiNotaSub">76.4% de clientes promotores (4 e 5)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secao: Modelagem Dimensional Star Schema -->
+    <section class="section-container" id="modeling">
+        <div class="section-header">
+            <span class="section-badge">Engenharia de Dados</span>
+            <h2 class="section-title">Modelagem Dimensional no Padrao Star Schema</h2>
+            <p class="section-subtitle">
+                Estrutura relacional desenvolvida para alta performance no motor VertiPaq do Power BI, reduzindo redundancias e garantindo calculos vetoriais instantaneos.
+            </p>
+        </div>
+
+        <div class="modeling-grid">
+            <div class="modeling-schema-card">
+                <h3 class="card-inner-title">Arquitetura de Entidades e Relacionamentos</h3>
+                <div class="schema-visual">
+                    <div class="schema-node fact-node">
+                        <span class="node-type">Tabela Fato Central</span>
+                        <span class="node-name">ft_pedidos_itens</span>
+                        <span class="node-desc">Grao: Item de Pedido (Preco, Frete, Datas)</span>
+                    </div>
+                    <div class="schema-connections">
+                        <div class="dim-chip">dm_produtos (1:N)</div>
+                        <div class="dim-chip">dm_sellers (1:N)</div>
+                        <div class="dim-chip">dm_pedidos (1:N)</div>
+                        <div class="dim-chip">dm_avaliacoes (1:1)</div>
+                        <div class="dim-chip">dm_calendario (1:N)</div>
+                    </div>
+                </div>
+                <div class="schema-attributes-table">
+                    <div class="table-row table-header">
+                        <span>Tabela</span>
+                        <span>Tipo</span>
+                        <span>Chave Primaria / Estrangeira</span>
+                        <span>Papel Analitico</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="mono bold text-accent">ft_pedidos_itens</span>
+                        <span>Fato</span>
+                        <span class="mono">order_id + order_item_id</span>
+                        <span>Metricas monetarias e volume</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="mono bold">dm_produtos</span>
+                        <span>Dimensao</span>
+                        <span class="mono">product_id</span>
+                        <span>Categorias, traducao, cubagem cm3</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="mono bold">dm_sellers</span>
+                        <span>Dimensao</span>
+                        <span class="mono">seller_id</span>
+                        <span>Localizacao, UF, Macrorregioes</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="mono bold">dm_pedidos</span>
+                        <span>Dimensao</span>
+                        <span class="mono">order_id</span>
+                        <span>Status, Lead time, SLA de entrega</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="mono bold">dm_avaliacoes</span>
+                        <span>Dimensao</span>
+                        <span class="mono">review_id</span>
+                        <span>Notas (1 a 5), NPS, Feedbacks</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="mono bold">dm_calendario</span>
+                        <span>Dimensao</span>
+                        <span class="mono">data</span>
+                        <span>Hierarquias temporais continuas</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modeling-benefits-card">
+                <h3 class="card-inner-title">Pilares de Qualidade na Transformacao (M)</h3>
+                <ul class="benefit-list">
+                    <li>
+                        <div class="benefit-point"></div>
+                        <div>
+                            <strong>Tratamento de Inconsistencias:</strong>
+                            Substituicao de categorias vazias ou nulas por rotulos padronizados e aplicacao de Proper Case.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="benefit-point"></div>
+                        <div>
+                            <strong>Enriquecimento Logistico:</strong>
+                            Calculo de lead time real em dias e desvio em relacao a estimativa de entrega diretamente no Power Query.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="benefit-point"></div>
+                        <div>
+                            <strong>Desduplicacao de Avaliacoes:</strong>
+                            Ordenacao temporal preservando a resposta mais recente do cliente por pedido.
+                        </div>
+                    </li>
+                    <li>
+                        <div class="benefit-point"></div>
+                        <div>
+                            <strong>Dimensao Calendario Dinamica:</strong>
+                            Geracao continua de datas de 2016 a 2018 com granularidade de mes, trimestre e semestre.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secao: Desempenho de Categorias -->
+    <section class="section-container" id="categories">
+        <div class="section-header">
+            <span class="section-badge">Visao de Categorias</span>
+            <h2 class="section-title">Comparativo de Categorias sob Tres Perspectivas</h2>
+            <p class="section-subtitle">
+                Cruzamento de maior faturamento, volume de unidades comercializadas e indice de satisfacao do consumidor por ano.
+            </p>
+        </div>
+
+        <div class="charts-grid-tri">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div>
+                        <h3 class="chart-title">Maior Faturamento (R$)</h3>
+                        <span class="chart-subtitle">Top Categorias em Receita Bruta</span>
+                    </div>
+                    <span class="chart-badge bg-blue">Financeiro</span>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartCategoryRevenue"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div>
+                        <h3 class="chart-title">Maior Volume de Itens</h3>
+                        <span class="chart-subtitle">Top Categorias em Escala Fisica</span>
+                    </div>
+                    <span class="chart-badge bg-lightblue">Volumetria</span>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartCategoryVolume"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div>
+                        <h3 class="chart-title">Maior Nota de Avaliacao</h3>
+                        <span class="chart-subtitle">Media com corte minimo de 50 reviews</span>
+                    </div>
+                    <span class="chart-badge bg-green">Satisfacao</span>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartCategoryRating"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispersao Volume vs Ticket Medio de Categorias -->
+        <div class="full-width-card mt-24">
+            <div class="chart-card-header">
+                <div>
+                    <h3 class="chart-title">Matriz Estrategica: Volume de Itens versus Ticket Medio</h3>
+                    <span class="chart-subtitle">Tamanho da bolha representa o Faturamento Total; cor representa a Nota de Avaliacao</span>
+                </div>
+                <span class="chart-badge bg-blue">Matriz de Portfolio</span>
+            </div>
+            <div class="chart-canvas-wrapper tall">
+                <canvas id="chartCategoryScatter"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secao: Desempenho de Sellers & Ticket Medio -->
+    <section class="section-container" id="sellers">
+        <div class="section-header">
+            <span class="section-badge">Visao de Parceiros</span>
+            <h2 class="section-title">Performance de Sellers e Ticket Medio</h2>
+            <p class="section-subtitle">
+                Diagnostico de concentracao de receita (Curva ABC), distribuicao do ticket medio por vendedor e indice de qualidade no atendimento.
+            </p>
+        </div>
+
+        <div class="charts-grid-duo">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div>
+                        <h3 class="chart-title">Curva de Concentracao ABC (Pareto)</h3>
+                        <span class="chart-subtitle">Faturamento Individual e Percentual Acumulado</span>
+                    </div>
+                    <span class="chart-badge bg-blue">Risco Operacional</span>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartSellerPareto"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div>
+                        <h3 class="chart-title">Ticket Medio por Seller (Top Sellers)</h3>
+                        <span class="chart-subtitle">Receita media gerada por pedido atendido</span>
+                    </div>
+                    <span class="chart-badge bg-green">Rentabilidade</span>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartSellerTicket"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-grid-duo mt-24">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div>
+                        <h3 class="chart-title">Top Sellers por Volume de Itens Vendidos</h3>
+                        <span class="chart-subtitle">Capacidade de expedicao e giro operacional</span>
+                    </div>
+                    <span class="chart-badge bg-lightblue">Expedicao</span>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartSellerVolume"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div>
+                        <h3 class="chart-title">Lead Time de Entrega versus Nota de Avaliacao</h3>
+                        <span class="chart-subtitle">Impacto direto da agilidade de envio no CSAT do seller</span>
+                    </div>
+                    <span class="chart-badge bg-green">SLA Logistico</span>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartDeliveryVsRating"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secao: Storytelling Executivo & Insights Preditivos -->
+    <section class="section-container" id="storytelling">
+        <div class="section-header">
+            <span class="section-badge">Storytelling e Decisao</span>
+            <h2 class="section-title">Relatorio Executivo e Insights de Negocios</h2>
+            <p class="section-subtitle">
+                Diagnosticos qualitativos e quantitativos com recomendacoes preditivas para expansao de margem e blindagem operacional.
+            </p>
+        </div>
+
+        <div class="story-grid">
+            <div class="story-card">
+                <div class="story-number">01</div>
+                <h3 class="story-title">Transicao de Mix e Expansao do Ticket Medio</h3>
+                <p class="story-text">
+                    Entre 2016 e 2018, observou-se uma mudanca estrutural no perfil das vendas. Categorias de alto valor unitario e consumo recorrente, como Beleza e Saude e Relogios e Presentes, ultrapassaram categorias pesadas de decoracao em faturamento. Isso elevou a margem media da plataforma e acelerou a monetizacao por transacao.
+                </p>
+                <div class="story-recommendation">
+                    <strong>Acao Estrategica:</strong> Ampliar o investimento em marketing de conversao para categorias de ticket acima de R$ 300,00 e alta recorrencia.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-number">02</div>
+                <h3 class="story-title">Cama, Mesa e Banho como Ancora de Trafego</h3>
+                <p class="story-text">
+                    Com mais de 11.200 unidades comercializadas ao longo do historico, a categoria Cama, Mesa e Banho funciona como o principal motor de aquisicao de novos clientes. Seu ticket unitario e acessivel e a elasticidade de demanda e elevada, garantindo liquidez constante ao ecossistema.
+                </p>
+                <div class="story-recommendation">
+                    <strong>Acao Estrategica:</strong> Utilizar itens de cama e banho como produtos de entrada em campanhas de fidelizacao e cross-selling.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-number">03</div>
+                <h3 class="story-title">Concentracao da Curva ABC e Risco de Sellers</h3>
+                <p class="story-text">
+                    Aproximadamente 12% dos vendedores concentram 70% da receita total. A saida ou instabilidade operacional de um pequeno grupo de 30 a 50 parceiros comerciais teria impacto desproporcional nos resultados consolidados da RZK Digital.
+                </p>
+                <div class="story-recommendation">
+                    <strong>Acao Estrategica:</strong> Criar uma estrutura de Key Account Management com atendimento prioritario e comissoes escalonadas para os top sellers.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-number">04</div>
+                <h3 class="story-title">Correlacao Direta entre SLA Logistico e Nota CSAT</h3>
+                <p class="story-text">
+                    O atraso de entrega e o fator que mais gera avaliacoes detratoras (1 e 2 estrelas). Sellers que despacham mercadorias em ate 24 horas alcancam notas medias de 4.65 estrelas, enquanto parceiros com atrasos frequentes perdem ate 0,8 estrelas na avaliacao global.
+                </p>
+                <div class="story-recommendation">
+                    <strong>Acao Estrategica:</strong> Implementar selo de qualidade para sellers ageis e alertas preditivos de risco de atraso em tempo real.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secao: Catalogo de Medidas DAX -->
+    <section class="section-container" id="dax-catalog">
+        <div class="section-header">
+            <span class="section-badge">Camada Semantica</span>
+            <h2 class="section-title">Catalogo de Medidas DAX Otimizadas</h2>
+            <p class="section-subtitle">
+                Formulas DAX desenhadas com foco em performance vetorial, transicao de contexto controlada e precisao estatistica.
+            </p>
+        </div>
+
+        <div class="dax-viewer-card">
+            <div class="dax-tabs">
+                <button class="dax-tab active" onclick="mostrarCodigoDax('faturamento')">Faturamento</button>
+                <button class="dax-tab" onclick="mostrarCodigoDax('volume')">Volume e Operacao</button>
+                <button class="dax-tab" onclick="mostrarCodigoDax('ticket')">Ticket Medio</button>
+                <button class="dax-tab" onclick="mostrarCodigoDax('avaliacao')">Satisfacao (Reviews)</button>
+                <button class="dax-tab" onclick="mostrarCodigoDax('rankings')">Rankings Anuais</button>
+                <button class="dax-tab" onclick="mostrarCodigoDax('yoy')">Time Intelligence (YoY)</button>
+            </div>
+            <div class="dax-code-body">
+                <pre><code id="daxCodeBlock" class="mono">
+Faturamento Total = 
+SUM(ft_pedidos_itens[price])
+
+Faturamento com Frete = 
+SUM(ft_pedidos_itens[valor_total_item])
+
+Total Frete = 
+SUM(ft_pedidos_itens[freight_value])
+                </code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodape Institucional -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="footer-logo">RZK DIGITAL</span>
+                <p class="footer-desc">
+                    Desafio Tecnico de Business Intelligence e Analise de Dados. Solucao desenvolvida com rigor metodologico, modelagem dimensional e storytelling executivo.
+                </p>
+            </div>
+            <div class="footer-links-group">
+                <span class="footer-heading">Artefatos do Projeto</span>
+                <ul class="footer-list">
+                    <li><a href="https://github.com/evelinlins" target="_blank" rel="noopener noreferrer">Repositorio GitHub</a></li>
+                    <li><a href="#modeling">Arquitetura Star Schema</a></li>
+                    <li><a href="#categories">Metricas de Categorias</a></li>
+                    <li><a href="#sellers">Metricas de Sellers</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <span class="footer-heading">Cores Institucionais</span>
+                <div class="palette-swatches">
+                    <span class="swatch" style="background: #063052;" title="Azul Extra Escuro #063052"></span>
+                    <span class="swatch" style="background: #0C4165;" title="Azul Escuro #0C4165"></span>
+                    <span class="swatch" style="background: #125379;" title="Azul Regular #125379"></span>
+                    <span class="swatch" style="background: #8197AC;" title="Azul Claro #8197AC"></span>
+                    <span class="swatch" style="background: #A8A7B1;" title="Azul Extra Claro #A8A7B1"></span>
+                    <span class="swatch" style="background: #50C0AE;" title="Verde Regular #50C0AE"></span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>Desenvolvido para o processo seletivo da RZK Digital. Todos os direitos reservados.</span>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

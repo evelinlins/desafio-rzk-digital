@@ -1,0 +1,214 @@
+// ==============================================================================
+// CATALOGO DE MEDIDAS DAX: PROJETO RZK DIGITAL (DATASET OLIST E-COMMERCE)
+// ==============================================================================
+
+// ==============================================================================
+// 1. MEDIDAS BASE E FATURAMENTO
+// ==============================================================================
+
+Faturamento Total = 
+SUM(ft_pedidos_itens[price])
+
+Faturamento com Frete = 
+SUM(ft_pedidos_itens[valor_total_item])
+
+Total Frete = 
+SUM(ft_pedidos_itens[freight_value])
+
+Percentual Frete sobre Faturamento = 
+DIVIDE([Total Frete], [Faturamento Total], 0)
+
+// ==============================================================================
+// 2. VOLUME E OPERACAO
+// ==============================================================================
+
+Volume Itens Vendidos = 
+COUNTROWS(ft_pedidos_itens)
+
+Quantidade Pedidos Unicos = 
+DISTINCTCOUNT(ft_pedidos_itens[order_id])
+
+Quantidade Sellers Ativos = 
+DISTINCTCOUNT(ft_pedidos_itens[seller_id])
+
+Quantidade Categorias Ativas = 
+DISTINCTCOUNT(dm_produtos[product_category_name])
+
+Itens por Pedido = 
+DIVIDE([Volume Itens Vendidos], [Quantidade Pedidos Unicos], 0)
+
+// ==============================================================================
+// 3. TICKET MEDIO
+// ==============================================================================
+
+Ticket Medio por Seller = 
+DIVIDE([Faturamento Total], DISTINCTCOUNT(ft_pedidos_itens[order_id]), 0)
+
+Ticket Medio por Pedido = 
+DIVIDE([Faturamento Total], [Quantidade Pedidos Unicos], 0)
+
+Ticket Medio por Item = 
+DIVIDE([Faturamento Total], [Volume Itens Vendidos], 0)
+
+// ==============================================================================
+// 4. SATISFACAO E AVALIACOES (REVIEWS)
+// ==============================================================================
+
+Total Avaliacoes = 
+CALCULATE(
+    COUNTROWS(dm_avaliacoes),
+    TREATAS(VALUES(ft_pedidos_itens[order_id]), dm_avaliacoes[order_id])
+)
+
+Nota Media Avaliacao = 
+CALCULATE(
+    AVERAGE(dm_avaliacoes[review_score]),
+    TREATAS(VALUES(ft_pedidos_itens[order_id]), dm_avaliacoes[order_id])
+)
+
+Total Avaliacoes Promotores = 
+CALCULATE(
+    COUNTROWS(dm_avaliacoes),
+    dm_avaliacoes[review_score] >= 4,
+    TREATAS(VALUES(ft_pedidos_itens[order_id]), dm_avaliacoes[order_id])
+)
+
+Total Avaliacoes Detratores = 
+CALCULATE(
+    COUNTROWS(dm_avaliacoes),
+    dm_avaliacoes[review_score] <= 2,
+    TREATAS(VALUES(ft_pedidos_itens[order_id]), dm_avaliacoes[order_id])
+)
+
+Taxa Satisfacao Clientes = 
+DIVIDE([Total Avaliacoes Promotores], [Total Avaliacoes], 0)
+
+// ==============================================================================
+// 5. RANKINGS ANUAIS: CATEGORIAS DE PRODUTOS
+// ==============================================================================
+
+Rank Categoria Faturamento = 
+IF(
+    ISINSCOPE(dm_produtos[categoria_formatada]),
+    RANKX(
+        ALLSELECTED(dm_produtos[categoria_formatada]),
+        [Faturamento Total],
+        ,
+        DESC,
+        Dense
+    )
+)
+
+Rank Categoria Volume = 
+IF(
+    ISINSCOPE(dm_produtos[categoria_formatada]),
+    RANKX(
+        ALLSELECTED(dm_produtos[categoria_formatada]),
+        [Volume Itens Vendidos],
+        ,
+        DESC,
+        Dense
+    )
+)
+
+Rank Categoria Avaliacao = 
+IF(
+    ISINSCOPE(dm_produtos[categoria_formatada]),
+    IF(
+        [Total Avaliacoes] >= 50,
+        RANKX(
+            FILTER(
+                ALLSELECTED(dm_produtos[categoria_formatada]),
+                [Total Avaliacoes] >= 50
+            ),
+            [Nota Media Avaliacao],
+            ,
+            DESC,
+            Dense
+        ),
+        BLANK()
+    )
+)
+
+// ==============================================================================
+// 6. RANKINGS ANUAIS: SELLERS
+// ==============================================================================
+
+Rank Seller Faturamento = 
+IF(
+    ISINSCOPE(dm_sellers[seller_id]) || ISINSCOPE(dm_sellers[seller_short_id]),
+    RANKX(
+        ALLSELECTED(dm_sellers[seller_id]),
+        [Faturamento Total],
+        ,
+        DESC,
+        Dense
+    )
+)
+
+Rank Seller Volume = 
+IF(
+    ISINSCOPE(dm_sellers[seller_id]) || ISINSCOPE(dm_sellers[seller_short_id]),
+    RANKX(
+        ALLSELECTED(dm_sellers[seller_id]),
+        [Volume Itens Vendidos],
+        ,
+        DESC,
+        Dense
+    )
+)
+
+Rank Seller Avaliacao = 
+IF(
+    ISINSCOPE(dm_sellers[seller_id]) || ISINSCOPE(dm_sellers[seller_short_id]),
+    IF(
+        [Total Avaliacoes] >= 30,
+        RANKX(
+            FILTER(
+                ALLSELECTED(dm_sellers[seller_id]),
+                [Total Avaliacoes] >= 30
+            ),
+            [Nota Media Avaliacao],
+            ,
+            DESC,
+            Dense
+        ),
+        BLANK()
+    )
+)
+
+// ==============================================================================
+// 7. TIME INTELLIGENCE E COMPARATIVOS HISTORICOS (YOY)
+// ==============================================================================
+
+Faturamento Ano Anterior = 
+CALCULATE(
+    [Faturamento Total],
+    SAMEPERIODLASTYEAR(dm_calendario[data])
+)
+
+Crescimento Faturamento YoY = 
+VAR FaturamentoAtual = [Faturamento Total]
+VAR FaturamentoPassado = [Faturamento Ano Anterior]
+RETURN
+IF(
+    NOT ISBLANK(FaturamentoPassado) && FaturamentoPassado > 0,
+    DIVIDE(FaturamentoAtual - FaturamentoPassado, FaturamentoPassado, 0),
+    BLANK()
+)
+
+Volume Ano Anterior = 
+CALCULATE(
+    [Volume Itens Vendidos],
+    SAMEPERIODLASTYEAR(dm_calendario[data])
+)
+
+Crescimento Volume YoY = 
+VAR VolumeAtual = [Volume Itens Vendidos]
+VAR VolumePassado = [Volume Ano Anterior]
+RETURN
+IF(
+    NOT ISBLANK(VolumePassado) && VolumePassado > 0,
+    DIVIDE(VolumeAtual - VolumePassado, VolumePassado, 0),
+    BLANK()
+)

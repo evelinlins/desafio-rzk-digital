@@ -1,0 +1,125 @@
+<!-- Mercadinho Pro - ReceiptTemplate.html -->
+<!-- Modal de Cupom de Venda / Impressão Térmica -->
+<div id="modal-receipt" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+  <div class="glass-card w-full max-w-md max-h-[90vh] flex flex-col rounded-2xl overflow-hidden shadow-2xl border border-slate-700 animate-slide-up">
+    
+    <!-- Cabeçalho do Modal -->
+    <div class="px-6 py-4 bg-slate-800/80 border-b border-slate-700 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+          <i data-lucide="receipt" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-base">Cupom de Venda</h3>
+          <p class="text-xs text-slate-400">Venda Concluída com Sucesso</p>
+        </div>
+      </div>
+      <button onclick="closeReceiptModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700/50 transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Área de Visualização do Cupom Térmico (Rolete 80mm) -->
+    <div class="flex-1 overflow-y-auto p-6 bg-slate-900/60 flex justify-center">
+      <div id="printable-receipt" class="w-full max-w-[340px] bg-white text-black p-5 rounded-lg shadow-md font-mono text-xs select-text">
+        
+        <!-- Header da Loja -->
+        <div class="text-center pb-3 border-b border-dashed border-gray-400">
+          <div class="font-extrabold text-sm uppercase tracking-wider" id="receipt-store-name">MERCADINHO PRO</div>
+          <div class="text-[11px] text-gray-700 mt-0.5" id="receipt-store-cnpj">CNPJ: 00.000.000/0001-00</div>
+          <div class="text-[10px] text-gray-600 mt-0.5" id="receipt-store-address">Rua do Comércio, 100 - Centro</div>
+          <div class="text-[10px] text-gray-600" id="receipt-store-phone">Tel: (11) 99999-8888</div>
+        </div>
+
+        <!-- Dados da Transação -->
+        <div class="py-2.5 border-b border-dashed border-gray-400 text-[10px]">
+          <div class="flex justify-between">
+            <span class="font-bold">CUPOM NÃO FISCAL</span>
+            <span id="receipt-id" class="font-bold">VND-0000</span>
+          </div>
+          <div class="flex justify-between mt-0.5 text-gray-600">
+            <span>DATA/HORA:</span>
+            <span id="receipt-datetime">21/08/2026 14:30</span>
+          </div>
+          <div class="flex justify-between mt-0.5 text-gray-600">
+            <span>OPERADOR:</span>
+            <span id="receipt-operator">Caixa 01</span>
+          </div>
+        </div>
+
+        <!-- Tabela de Itens -->
+        <div class="py-2.5 border-b border-dashed border-gray-400">
+          <div class="flex justify-between font-bold text-[10px] pb-1 text-gray-700 border-b border-gray-300">
+            <span class="w-8">QTD</span>
+            <span class="flex-1 text-left px-1">ITEM / DESC</span>
+            <span class="w-14 text-right">UNIT</span>
+            <span class="w-14 text-right">TOTAL</span>
+          </div>
+          <div id="receipt-items-list" class="divide-y divide-gray-100 text-[11px] pt-1">
+            <!-- Inserido dinamicamente via JS -->
+          </div>
+        </div>
+
+        <!-- Totalizadores -->
+        <div class="py-2.5 border-b border-dashed border-gray-400 space-y-1 text-xs">
+          <div class="flex justify-between text-gray-600">
+            <span>Subtotal:</span>
+            <span id="receipt-subtotal">R$ 0,00</span>
+          </div>
+          <div class="flex justify-between text-emerald-700" id="receipt-discount-row">
+            <span>Desconto:</span>
+            <span id="receipt-discount">- R$ 0,00</span>
+          </div>
+          <div class="flex justify-between font-extrabold text-sm text-black pt-1 border-t border-gray-300">
+            <span>TOTAL A PAGAR:</span>
+            <span id="receipt-total">R$ 0,00</span>
+          </div>
+        </div>
+
+        <!-- Pagamento e Troco -->
+        <div class="py-2.5 border-b border-dashed border-gray-400 space-y-1 text-[11px]">
+          <div class="flex justify-between">
+            <span class="font-bold">FORMA DE PAGAMENTO:</span>
+            <span id="receipt-payment-method" class="font-extrabold uppercase">DINHEIRO</span>
+          </div>
+          <div class="flex justify-between text-gray-700" id="receipt-received-row">
+            <span>Valor Recebido:</span>
+            <span id="receipt-received">R$ 0,00</span>
+          </div>
+          <div class="flex justify-between font-bold text-gray-900" id="receipt-change-row">
+            <span>TROCO:</span>
+            <span id="receipt-change">R$ 0,00</span>
+          </div>
+        </div>
+
+        <!-- QR Code PIX (Opcional) -->
+        <div id="receipt-pix-container" class="hidden py-3 text-center border-b border-dashed border-gray-400">
+          <div class="text-[10px] font-bold text-gray-700 mb-1">PAGAMENTO VIA PIX</div>
+          <div id="receipt-pix-qrcode" class="flex justify-center my-1"></div>
+          <div class="text-[9px] text-gray-500 break-all" id="receipt-pix-key"></div>
+        </div>
+
+        <!-- Rodapé do Cupom -->
+        <div class="pt-3 text-center text-[10px] text-gray-600">
+          <p id="receipt-footer-msg">Obrigado pela preferência! Volte sempre!</p>
+          <p class="mt-1 text-[8px] text-gray-400">Mercadinho Pro • Sistema Ágil de PDV</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Ações Inferiores -->
+    <div class="px-6 py-4 bg-slate-800/90 border-t border-slate-700 flex items-center justify-between gap-3">
+      <button onclick="shareReceiptWhatsApp()" class="flex-1 px-4 py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 font-semibold text-xs flex items-center justify-center gap-2 border border-emerald-500/30 transition active:scale-95">
+        <i data-lucide="share-2" class="w-4 h-4"></i>
+        <span>WhatsApp</span>
+      </button>
+
+      <button onclick="printReceipt()" class="flex-1 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition active:scale-95">
+        <i data-lucide="printer" class="w-4 h-4"></i>
+        <span>Imprimir Cupom (Ctrl+P)</span>
+      </button>
+    </div>
+
+  </div>
+</div>
