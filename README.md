@@ -2,12 +2,6 @@
 
 Entrega do desafio técnico de Business Intelligence para a RZK Digital, desenvolvida com o Brazilian E-Commerce Public Dataset by Olist.
 
-## Links
-
-- Dashboard web: **[inserir link do GitHub Pages]**
-- Repositório: **[inserir link do GitHub]**
-- Arquivo Power BI: **[inserir link para o arquivo `.pbix`]**
-
 ## Objetivo
 
 Construir uma análise exploratória de e-commerce para identificar os melhores sellers e categorias de produto, usando faturamento, volume de itens vendidos, avaliação média e ticket médio.
